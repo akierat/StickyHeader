@@ -5,7 +5,7 @@
 // Up to now(2024.11.30), https://github.com/traefik/yaegi (latest version is v0.16.1) only supports Go version 1.21 and 1.22
 // in this case, when using this func in yaegi, there will be a compile error: package http "net/http" has no symbol ParseSetCookie
 // so, in order to use this func, we need to copy this file from net/http/cookie.go in Go 1.23.0
-// please remove it and directly use http.ParseSetCookie when yaegi support Go 1.23.0
+// please remove it and directly use http.ParseSetCookie when yaegi supports Go 1.23.0
 package stickyheader
 
 import (

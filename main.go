@@ -96,7 +96,7 @@ func (r *responseRecorder) WriteHeader(statusCode int) {
 	// 解析 Set-Cookie 头
 	if cookies, ok := r.header["Set-Cookie"]; ok {
 		for _, c := range cookies {
-			// 使用 http.Cookie 自带的 Parse 方法逐一解析
+			// 将 Set-Cookie 字符串解析成 http.Cookie 结构
 			cookie, err := ParseSetCookie(c)
 			if err != nil {
 				fmt.Printf("failed to parse Set-Cookie, cookie: %v, err: %v", cookie, err)
