@@ -1,0 +1,9 @@
+displayName: StickyHeader
+type: middleware
+import: github.com/nullxjx/stickyheader
+summary: |
+  sticky session based on request header
+testData:
+  cache_size: 100
+  header_name: X-USER-ID
+  cookie_name: whoami_session
