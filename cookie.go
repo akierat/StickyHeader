@@ -48,7 +48,6 @@ func ParseSetCookie(line string) (*http.Cookie, error) {
 	c := &http.Cookie{
 		Name:   name,
 		Value:  value,
-		Quoted: quoted,
 		Raw:    line,
 	}
 	for i := 1; i < len(parts); i++ {
