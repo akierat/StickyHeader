@@ -1,9 +1,11 @@
 displayName: StickyHeader
 type: middleware
+
 import: github.com/akierat/stickyheader
-summary: |
-  sticky session based on request header
+
+summary: "sticky session based on request header"
+
 testData:
   cache_size: 100
-  header_name: http_x_session_seed
-  cookie_name: http_x_session_seed_cookie
+  header_name: X-USER-ID
+  cookie_name: whoami_session
