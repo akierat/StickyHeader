@@ -9,13 +9,13 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
-      - "--experimental.localPlugins.stickyheader.moduleName=github.com/nullxjx/stickyheader"
+      - "--experimental.localPlugins.stickyheader.moduleName=github.com/akierat/stickyheader"
     ports:
       - "80:80"
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "../:/plugins-local/src/github.com/nullxjx/stickyheader:ro"
+      - "../:/plugins-local/src/github.com/akierat/stickyheader:ro"
 
   whoami:
     image: traefik/whoami

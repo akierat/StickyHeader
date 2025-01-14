@@ -1,39 +1,46 @@
 # StickyHeader
 
-StickyHeader 是用于 [traefik](https://github.com/traefik/traefik) 的一个插件，它可以根据 header 实现 [sticky session](https://doc.traefik.io/traefik/routing/services/#sticky-sessions)
+StickyHeader is a plugin for [Traefik](https://github.com/traefik/traefik) that enables [sticky sessions](https://doc.traefik.io/traefik/routing/services/#sticky-sessions) based on headers.
 
 ## Introduction
-traefik 使用 cookie 实现 [sticky session](https://doc.traefik.io/traefik/routing/services/#sticky-sessions)，且默认不支持基于 header 的会话保持能力（例如 IP Hash）。
-但是有些业务场景需要根据 header 做会话保持。例如，[vllm](https://github.com/vllm-project/vllm/) 等大模型推理服务的 [prefix-caching](https://docs.vllm.ai/en/v0.5.5/automatic_prefix_caching/apc.html) 特性，希望将同一个用户的请求转发到同一个 vllm pod，这样可以提高 gpu 中的 kv cache命中率。
+Traefik uses cookies to implement [sticky sessions](https://doc.traefik.io/traefik/routing/services/#sticky-sessions), and by default, it doesn't support session persistence based on headers (such as IP Hash). However, some business scenarios require session persistence based on headers. For example, services like [vllm](https://github.com/vllm-project/vllm/) with [prefix-caching](https://docs.vllm.ai/en/v0.5.5/automatic_prefix_caching/apc.html) features may need to route requests from the same user to the same vllm pod, thereby improving the cache hit rate of the key-value (KV) cache in the GPU.
 
-因此，此插件使用一个本地的 [lru cache](https://github.com/hashicorp/golang-lru)，存储请求中设置的 header 到 traefik 设置的 cookie 之间的映射关系，这样就可以将 traefik 基于 cookie 实现的会话保持能力，转换成基于请求 header 的会话保持能力。
+To address this, this plugin uses a local [LRU cache](https://github.com/hashicorp/golang-lru) to store the mapping between headers in requests and cookies set by Traefik. This allows Traefik’s cookie-based session persistence to be converted into header-based session persistence.
 
 ## Usage
-1. 由于 [yaegi](https://github.com/traefik/yaegi) 暂时不支持 Go modules，因此需要先将仓库的依赖下载到本地 vendor 目录下
-```bash
-go mod tidy
-go mod download
-go mod vendor
-```
 
-2. 启动服务
-```bash
-cd demo
-docker-compose up -d
-```
-执行命令后，可以从 traefik 日志中看到加载插件成功
-![](./docs/start_up.png)
+1. Since [yaegi](https://github.com/traefik/yaegi) currently doesn't support Go modules, you need to download the repository's dependencies into your local `vendor` directory first:
 
-同时，也可以在 traefik dashboard 看到这条路由成功应用上了这个插件
-![](./docs/dashboard_1.png)
+    ```bash
+    go mod tidy
+    go mod download
+    go mod vendor
+    ```
 
-![](./docs/dashboard_2.png)
+2. Start the service:
 
-3. 测试基于 header 的会话保持能力
-```bash
-bash req.sh
-```
-修改 header 中的 X-USER-ID 的值，从响应结果中观察是否切换了一个 whoami pod。
+    ```bash
+    cd demo
+    docker-compose up -d
+    ```
+
+    After executing the command, you should see in the Traefik logs that the plugin has loaded successfully:
+
+    ![](./docs/start_up.png)
+
+    Additionally, you can see the route in the Traefik dashboard where the plugin has been successfully applied:
+
+    ![](./docs/dashboard_1.png)
+
+    ![](./docs/dashboard_2.png)
+
+3. Test the header-based session persistence:
+
+    ```bash
+    bash req.sh
+    ```
+
+    Modify the `X-USER-ID` value in the header, and observe the response to see if it switches to a different whoami pod.
 
 ## Limitations
-由于采用了本地的 [lru cache](https://github.com/hashicorp/golang-lru)，所以插件变成了有状态服务，因此，无法设置多个traefik pod副本（在k8s集群中部署的情况），如果需要使用多个 traefik pod副本，需要把这里的 [lru cache](https://github.com/hashicorp/golang-lru) 改成 Redis 这类共享缓存。
+Since the plugin uses a local [LRU cache](https://github.com/hashicorp/golang-lru), it becomes a stateful service. Therefore, it cannot be used with multiple Traefik pod replicas (in a Kubernetes cluster, for example). If you need to use multiple Traefik pod replicas, you'll need to replace the [LRU cache](https://github.com/hashicorp/golang-lru) with a shared cache like Redis.

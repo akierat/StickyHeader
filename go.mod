@@ -1,4 +1,4 @@
-module github.com/nullxjx/stickyheader
+module github.com/akierat/stickyheader
 
 go 1.23
 
