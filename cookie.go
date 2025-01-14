@@ -120,7 +120,6 @@ func ParseSetCookie(line string) (*http.Cookie, error) {
 			c.Path = val
 			continue
 		case "partitioned":
-			c.Partitioned = true
 			continue
 		}
 		c.Unparsed = append(c.Unparsed, parts[i])
