@@ -1,5 +1,3 @@
-# StickyHeader
-
 StickyHeader is a plugin for [Traefik](https://github.com/traefik/traefik) that enables [sticky sessions](https://doc.traefik.io/traefik/routing/services/#sticky-sessions) based on headers.
 
 ## Introduction
@@ -44,3 +42,5 @@ To address this, this plugin uses a local [LRU cache](https://github.com/hashico
 
 ## Limitations
 Since the plugin uses a local [LRU cache](https://github.com/hashicorp/golang-lru), it becomes a stateful service. Therefore, it cannot be used with multiple Traefik pod replicas (in a Kubernetes cluster, for example). If you need to use multiple Traefik pod replicas, you'll need to replace the [LRU cache](https://github.com/hashicorp/golang-lru) with a shared cache like Redis.
+=======
+# stickyheader
